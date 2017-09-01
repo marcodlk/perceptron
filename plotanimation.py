@@ -1,6 +1,5 @@
 ''' 
 @author: Rory Andrews
-@adapted by: Marco de Lannoy Kobayashi
 '''
 import sys
 import numpy as np
