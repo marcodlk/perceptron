@@ -2,7 +2,6 @@
 Created on Tue Aug 29 11:53:40 2017
 
 @author: Kasey Hagi
-@adapted by: Marco de Lannoy Kobayashi
 """
 from random import randint
 
