@@ -152,6 +152,8 @@ def _main():
 
     # train
     print('-- Running perceptron algorithm')
+    print('   * Learning rate  : %f' % learn_rate)
+    print('   * Max iterations : %d' % max_iters)
     iters,bias,weights = perceptron.train()
 
     # results
