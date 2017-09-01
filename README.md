@@ -20,7 +20,7 @@ python3 perceptron.py -h
 # set learning rate parameter to 0.01
 # set max iterations to 500
 # generate animated plot from results
-python3 perceptron.py -r 10 -c 0.01 -i 1000 -a plot.mp4
+python3 perceptron.py -r 10 -c 0.01 -i 500 -a plot.mp4
 
 # use preset AND binary op data
 #  + available binops: and,or,xor,nand
