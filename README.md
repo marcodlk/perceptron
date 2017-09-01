@@ -7,7 +7,7 @@ Perceptron algorithm module
 pip3 install matplotlib numpy optparse
 
 # clone
-git clone https://github.com/marcodlk/perceptron
+git clone https://github.com/marcodlk/perceptron.git
 
 cd perceptron/
 # see options
