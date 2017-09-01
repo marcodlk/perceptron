@@ -1,0 +1,7 @@
+# byte-compiled / optimized / dll lifes
+__pycache__/
+
+# misc
+*.csv
+*.txt
+*.mp4
