@@ -1,4 +1,10 @@
+'''
+@author: Marco de Lannoy Kobayashi
+'''
+
 from optparse import OptionParser
+from datagen import generate_random_linear_separable
+from plotanimation import animate
 
 #-- OPTIONS --------------------------------------------------------------------
 def _parse_opts():
@@ -17,9 +23,15 @@ def _parse_opts():
                       help='set max iterations [default = 1000]',
                       metavar='<integer>',
                       default=1000)
+    parser.add_option('-r','--random_data',dest='randomset',
+                      help='use randomly generated data with size X',
+                      metavar='X')
     parser.add_option('-0','--binop',dest='operation',
                       help='use binary operation dataset [default = AND]',
                       default='AND')
+    parser.add_option('-a','--animation',dest='animation',
+                      help='generate animated plot of perceptron converging',
+                      metavar='FILE')
 
     return parser.parse_args()
 
@@ -86,6 +98,7 @@ class MLP: #TODO
 
 #-- HELPER FUNCTIONS -----------------------------------------------------------
 def _collect(filename):
+    print('-- Collecting data from %s' % filename)
     collected = []
     with open(filename) as datafile:
         data = datafile.read().strip().split('\n')
@@ -95,6 +108,7 @@ def _collect(filename):
     return collected
 
 def _dump(logs,filename):
+    print('-- Dumping data to %s' % filename)
     with open(filename,'w') as outfile:
         for log in logs:
             outfile.write(str(log[0]) + ",")
@@ -125,24 +139,38 @@ def _main():
     # data input
     if opts.datafile:
         dataset = _collect(opts.datafile)
+    elif opts.randomset:
+        dataset = generate_random_linear_separable(int(opts.randomset))
+        _dump(dataset,'random.csv')
 
     # learning rate parameter
     learn_rate = float(opts.learn_rate)
     assert learn_rate < 1. and learn_rate > 0.
 
-    # learn
+    # setup
     perceptron = SLP(dataset,name='and',lrp=learn_rate,mi=max_iters)
+
+    # train
+    print('-- Running perceptron algorithm')
     iters,bias,weights = perceptron.train()
 
     # results
     if (iters,bias,weights) == (None,None,None):
-        print("Could not find feasible solution within %d iterations" % max_iters)
+        print('-- [!!!] Unable to converge within %d iterations' % max_iters)
     else:
-        print(("y = %f + (%f * x0) + (%f * x1)") % (bias, weights[0], weights[1]))
-        print("Solution found in %d iterations" % (iters-1))
+        print( '-- Success')
+        print( '+%s' % ('='*79) )
+        print(('| Weight function = %f + (%f * x0) + (%f * x1)') 
+                                                            % (bias, weights[0], weights[1]))
+        print( '| Converged in %d iterations' % (iters-1))
+        print( '+%s' % ('='*79) )
+        if opts.animation:
+            print('-- Generating %s' % opts.animation)
+            animate(perceptron.logs,dataset,opts.animation)
 
     if opts.logfile:
         _dump(perceptron.logs,opts.logfile)
 
 if __name__ == '__main__':
     _main()
+    print('-- Done')
