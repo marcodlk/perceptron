@@ -32,6 +32,10 @@ def _parse_opts():
     parser.add_option('-a','--animation',dest='animation',
                       help='generate animated plot of perceptron converging',
                       metavar='FILE')
+    parser.add_option('-F','--frame_delay',dest='delay',
+                      help='set frame delay for animation',
+                      metavar='<integer>',
+                      default=100)
 
     return parser.parse_args()
 
@@ -45,8 +49,8 @@ class SLP:
         self.__samples = [[col for col in row[:-1]] for row in train_set]
         self.__labels = [row[-1] for row in train_set]
 
-        self.__weights = [1.0 for col in range(len(self.__samples[0]))]
-        self.__bias = 1.0
+        self.__weights = [0.0 for col in range(len(self.__samples[0]))]
+        self.__bias = 0.0
         self.logs = []
 
     def __predict(self,sample):
@@ -57,30 +61,19 @@ class SLP:
     def train(self):
         for i in range(self.__max_iters):
             updated = False
-            bias = self.__bias
-            weights = self.__weights
             for sample,label in zip(self.__samples,self.__labels):
                 prediction = self.__predict(sample)
                 if (label*prediction) > 0.0:
                     continue
-                    
                 error = label - prediction
-                #self.__bias += self.__learn_rate * error
-                #self.__weights = [weight + self.__learn_rate*error*feat
-                                  #for weight,feat in zip(self.__weights,sample)]
-                bias += self.__learn_rate * error
-                weights = [weight + self.__learn_rate*error*feat
-                                  for weight,feat in zip(weights,sample)]
+                self.__bias += self.__learn_rate * error
+                self.__weights = [weight + self.__learn_rate*error*feat
+                                  for weight,feat in zip(self.__weights,sample)]
                 updated = True
-                #log = [self.__bias]
-                #log.extend([weight for weight in self.__weights])
-                #self.logs.append(log)
-            self.__bias = bias
-            self.__weights = weights
-            log = [self.__bias]
-            log.extend([weight for weight in self.__weights])
-            self.logs.append(log)
-                
+                log = [self.__bias]
+                log.extend([weight for weight in self.__weights])
+                self.logs.append(log)
+
             if not updated: 
                 return i,self.__bias,self.__weights
 
@@ -178,7 +171,7 @@ def _main():
         print( '+%s' % ('='*79) )
         if opts.animation:
             print('-- Generating %s' % opts.animation)
-            animate(perceptron.logs,dataset,opts.animation)
+            animate(perceptron.logs,dataset,opts.animation,int(opts.delay))
 
     if opts.logfile:
         _dump(perceptron.logs,opts.logfile)

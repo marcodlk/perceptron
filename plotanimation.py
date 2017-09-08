@@ -57,7 +57,7 @@ def update_line(line_data, line):
 
     return line
 
-def animate(weight_data,point_data,outputfile):
+def animate(weight_data,point_data,outputfile,interval=300):
     # Parse point data
     point_data1 = [[],[]]
     point_data2 = [[],[]]
@@ -106,7 +106,7 @@ def animate(weight_data,point_data,outputfile):
 
 
     line_ani = animation.FuncAnimation(fig, update_line, line_data,
-                                       fargs=(line,), interval=300)
+                                       fargs=(line,), interval=interval)
     line_ani.save(outputfile)
     print(' . . . [animation complete]')
 
